@@ -1,0 +1,73 @@
+JUnit tests should go in this directory.
+
+Make sure you package these classes properly so that you earn the Code Organization Badge!
+
+ # CSV Parser Project
+ Team Members: Habram Alcantar (halcanta)
+ Total Time Estimate: ~15 hours
+ Repo link:https://github.com/cs0320-s24/csv-habramalcantar.git
+
+ # Design
+    First, we can tackle the relationship between the separate classes. Within the Main class, we communicate
+ with the user through the terminal with the use of a Scanner. Utilizing the Scanner, we get the information
+ necessary to instantiate the CSVParser class within the Main class (the name of the file, user specified search
+ methods, information regarding the existence of headers within the file, a column index to search by, etc). The
+ main method within the Main class ultimately returns nothing, but serves to acquire information from the user and
+ to catch failures/exceptions.
+
+    Once the CVSParser class is instantiated, we call the parse method within CSVParser. The parse method utilizes
+ an Object that extends the Reader class in order to parse through the desired file. However, the parse method will
+ pass each parsed row into the search algorithm, thus it must instantiate the CSVSearch class.
+
+    From here, the instantiated CSVSearch's search method iterates through the current row, and depending on user
+ input, attempts to match either a certain index of the row with a desired word or simply in general. If the
+ desired word is found, the search method prints the row to the terminal. Furthermore, as long as the row is
+ functional (in the sense that it contains the correct number of items and does not contain any empty columns),
+ the search method will pass the row to the given CreatorFromRow's create method to create a new object that
+ contains information from the row. This items of a generic type are added to a list to be stored within the CSVSearch
+ class. This list of items can be accessed via a getterMethod, and is returned by the CSVParser.
+
+    One design choice in particular I would like to discuss is my decision to pass each individual row to the CSVSearch
+ method instead of parsing the entire file, and storing the rows as a List<List<String>>. I found the idea of
+ iterating through the file twice as unnecessary, and thought it could cut down on runtime if I simply went ahead and
+ tackled the search aspect once I had already gotten the parsed row. I understand that this makes the storing of the
+ created items a bit difficult, but I think that, due to the interconnectedness of the parser and the search method,
+ having them be a bit reliant on each other is justifiable.
+
+ # Errors
+    All the errors I have acquired thus far have resulted in an additional "catch case," returning a message that
+ details what caused the error and either terminating the program or rebooting the program.
+
+    In the case of a malformed row, the program prints out the row and states that the row could not create an object
+ due to a missing field.
+
+    In the case of a FileNotFound exception, the program states that the file was not found, and reboots the program.
+ However, this is only the case if the exception is thrown within the Main class.
+
+
+ # Tests
+    Throughout my testing classes, I focused on a few edge cases in particular. All of these were mentioned in
+ the handout by some form or another:
+ - CSV data with and without column headers
+ - CSV data in different Reader types (e.g., StringReader and FileReader);
+ - CSV data with inconsistent column count;
+ - Searching for values that are, and aren’t, present in the CSV;
+ - Searching for values that are present, but are in the wrong column;
+ - Searching for values by index, by column name, and without a column identifier; and
+ - Using multiple CreatorFromRow classes to extract CSV data in different formats.
+
+ # How to...
+ ## Run the test provided:
+    In order to run the test provided within this project, simply type 'mvn package' within the terminal. They should
+ compile.
+
+ ## Build and run the program:
+    Firstly, ensure the file you would like to parse or search exists solely within the data folder and not within another
+ folder that exists within the data folder. From there, you can type "./run" from within the terminal and a
+ user-interface prompt will begin to display within the terminal. Follow the prompts, returning your option exactly as
+ is shown.
+
+
+
+
+
