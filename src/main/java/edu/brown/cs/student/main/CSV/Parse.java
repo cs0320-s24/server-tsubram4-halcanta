@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  */
 public class Parse<T> {
 
-  static final Pattern regexSplitCSVRow = Pattern.compile(
-      ",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
+  static final Pattern regexSplitCSVRow =
+      Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
 
   private BufferedReader reader;
   private boolean hasHeaders;
@@ -30,10 +30,10 @@ public class Parse<T> {
   private String filepath;
 
   /**
-   * @param reader     - Object which contains data
+   * @param reader - Object which contains data
    * @param hasHeaders - boolean indicating if data has headers
-   * @param creator    - Creator object which specifies what object each row is converted to
-   * @param filePath   - String which represents data's filepath
+   * @param creator - Creator object which specifies what object each row is converted to
+   * @param filePath - String which represents data's filepath
    * @throws IOException - exception if there are any errors in input
    */
   public Parse(Object reader, boolean hasHeaders, CreatorFromRow<T> creator, String filePath)
@@ -115,8 +115,7 @@ public class Parse<T> {
    * @return - boolean indicating if data is accessible via filepath
    */
   private static boolean isPathAllowed(String filePath) {
-    String allowed_directory =
-        "C:\\Users\\HP\\Desktop\\Tanay Subramanian\\Education\\Brown\\Sophomore\\CS 320\\csv-tanaysubramanian\\data";
+    String allowed_directory = "/Users/habramalcantar/Desktop/CS320/server-tsubram4-halcanta/data";
     Path path = Paths.get(filePath).toAbsolutePath();
     return path.startsWith(allowed_directory);
   }

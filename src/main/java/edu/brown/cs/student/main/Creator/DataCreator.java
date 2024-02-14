@@ -2,9 +2,7 @@ package edu.brown.cs.student.main.Creator;
 
 import java.util.List;
 
-/**
- * DataCreator class is an example of an object that each row can be converted to as a Creator
- */
+/** DataCreator class is an example of an object that each row can be converted to as a Creator */
 public class DataCreator implements CreatorFromRow<DataCreator> {
 
   private String entry;

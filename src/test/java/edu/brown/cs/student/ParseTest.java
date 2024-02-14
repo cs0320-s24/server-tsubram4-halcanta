@@ -2,24 +2,20 @@ package edu.brown.cs.student;
 
 import static org.junit.Assert.assertEquals;
 
+import edu.brown.cs.student.main.CSV.Parse;
 import edu.brown.cs.student.main.Creator.Creator;
 import edu.brown.cs.student.main.Creator.CreatorFromRow;
-import edu.brown.cs.student.main.CSV.Parse;
 import edu.brown.cs.student.main.Creator.DataCreator;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
-import org.testng.Assert;
 
-/**
- * ParseTest tests the Parse class
- */
+/** ParseTest tests the Parse class */
 public class ParseTest {
 
   private Parse parseWithHeader;
@@ -58,10 +54,11 @@ public class ParseTest {
     Creator creator = new Creator();
     parseWithHeader = new Parse(csvWithHeader, true, creator, csvWithHeader);
     parseWithoutHeader = new Parse(csvWithoutHeader, false, creator, csvWithoutHeader);
-    parseFileReaderWithHeader = new Parse(csvFileReaderWithHeader, true, creator,
-        "data/census/dol_ri_earnings_disparity.csv");
-    parseFileReaderWithoutHeader = new Parse(csvFileReaderWithoutHeader, false, creator,
-        "data/grade_data.csv");
+    parseFileReaderWithHeader =
+        new Parse(
+            csvFileReaderWithHeader, true, creator, "data/census/dol_ri_earnings_disparity.csv");
+    parseFileReaderWithoutHeader =
+        new Parse(csvFileReaderWithoutHeader, false, creator, "data/grade_data.csv");
     parseStringReaderWithHeader = new Parse(csvStringReaderWithHeader, true, creator, "no");
     parseStringReaderWithoutHeader = new Parse(csvStringReaderWithoutHeader, false, creator, "no");
   }
@@ -161,13 +158,10 @@ public class ParseTest {
    */
   @Test
   public void testCreators() throws Exception {
-    /**
-     * Converts each row to a String
-     */
+    /** Converts each row to a String */
     class StringCreator implements CreatorFromRow<String> {
 
       /**
-       *
        * @param row - input row of type List<String>
        * @return - outputs row as String
        */
@@ -184,13 +178,10 @@ public class ParseTest {
         List.of("BobbyBIOL92A", "JonnyCHEM85B", "SaraANTH90A", "JimmyCHEM83B", "YattyCSCI77C"),
         parseFun.parse());
 
-    /**
-     * Converts each row to the sum of the numbers in that row
-     */
+    /** Converts each row to the sum of the numbers in that row */
     class IntegerCreator implements CreatorFromRow<Integer> {
 
       /**
-       *
        * @param row - input row of type List<String>
        * @return - Integer indicating sum of numbers in that row
        */
@@ -219,8 +210,8 @@ public class ParseTest {
     List<DataCreator> parsedData = parseWithDataCreator.parse();
 
     // Convert list of Data objects to list of strings for easy comparison
-    List<String> parsedStrings = parsedData.stream().map(data -> data.getEntry()).collect(
-        Collectors.toList());
+    List<String> parsedStrings =
+        parsedData.stream().map(data -> data.getEntry()).collect(Collectors.toList());
 
     List<String> expected = List.of("Value1Value2", "Value3Value4");
     assertEquals(expected, parsedStrings);

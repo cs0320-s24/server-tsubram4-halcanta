@@ -2,9 +2,9 @@ package edu.brown.cs.student;
 
 import static org.junit.Assert.assertEquals;
 
-import edu.brown.cs.student.main.Creator.Creator;
 import edu.brown.cs.student.main.CSV.Parse;
 import edu.brown.cs.student.main.CSV.Search;
+import edu.brown.cs.student.main.Creator.Creator;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -13,9 +13,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Class to test search method
- */
+/** Class to test search method */
 public class SearchTest {
 
   private Parse parseWithHeader;
@@ -32,7 +30,8 @@ public class SearchTest {
   @Before
   public void setUp() throws Exception {
     String csvWithHeader = "data/census/dol_ri_earnings_disparity.csv";
-    String csvWithHeaderProtected = "src/main/java/edu/brown/cs/student/main/protected.csv";    //DOESNT WORK IN MAIN******
+    String csvWithHeaderProtected =
+        "src/main/java/edu/brown/cs/student/main/protected.csv"; // DOESNT WORK IN MAIN******
     String csvWithoutHeader = "data/grade_data.csv";
     Reader csvFileReaderWithHeader = new FileReader("data/census/dol_ri_earnings_disparity.csv");
     Reader csvFileReaderWithoutHeader = new FileReader("data/grade_data.csv");
@@ -56,10 +55,11 @@ public class SearchTest {
     Creator creator = new Creator();
     parseWithHeader = new Parse(csvWithHeader, true, creator, csvWithHeader);
     parseWithoutHeader = new Parse(csvWithoutHeader, false, creator, csvWithoutHeader);
-    parseFileReaderWithHeader = new Parse(csvFileReaderWithHeader, true, creator,
-        "data/census/dol_ri_earnings_disparity.csv");
-    parseFileReaderWithoutHeader = new Parse(csvFileReaderWithoutHeader, false, creator,
-        "data/grade_data.csv");
+    parseFileReaderWithHeader =
+        new Parse(
+            csvFileReaderWithHeader, true, creator, "data/census/dol_ri_earnings_disparity.csv");
+    parseFileReaderWithoutHeader =
+        new Parse(csvFileReaderWithoutHeader, false, creator, "data/grade_data.csv");
     parseStringReaderWithHeader = new Parse(csvStringReaderWithHeader, true, creator, "no");
     parseStringReaderWithoutHeader = new Parse(csvStringReaderWithoutHeader, false, creator, "no");
   }

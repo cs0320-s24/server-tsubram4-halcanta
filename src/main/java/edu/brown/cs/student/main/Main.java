@@ -9,9 +9,7 @@ import java.io.StringReader;
 import java.util.Objects;
 import java.util.Scanner;
 
-/**
- * The Main class of our project. This is where execution begins.
- */
+/** The Main class of our project. This is where execution begins. */
 public final class Main {
 
   /**
@@ -26,8 +24,7 @@ public final class Main {
   /**
    * @param args - input of array of strings
    */
-  private Main(String[] args) {
-  }
+  private Main(String[] args) {}
 
   private void run() {
     try {
@@ -61,8 +58,8 @@ public final class Main {
           }
         }
       } else if (data.startsWith("StringReader(")) {
-        String content = data.substring(data.indexOf('(') + 1, data.lastIndexOf(')'))
-            .replace("\"", "");
+        String content =
+            data.substring(data.indexOf('(') + 1, data.lastIndexOf(')')).replace("\"", "");
         Reader new_data = new StringReader(content);
         Creator creator = new Creator();
         Parse parse = new Parse(new_data, hasHeaders, creator, path);
@@ -95,7 +92,6 @@ public final class Main {
             System.out.println(search.search());
           }
         }
-
       }
 
     } catch (Exception e) {

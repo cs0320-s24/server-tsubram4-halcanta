@@ -13,7 +13,7 @@ public class FactoryFailureException extends Exception {
 
   /**
    * @param message - statement is of type String
-   * @param row     - input of type List<String> representing each row of data
+   * @param row - input of type List<String> representing each row of data
    */
   public FactoryFailureException(String message, List<String> row) {
     super(message);

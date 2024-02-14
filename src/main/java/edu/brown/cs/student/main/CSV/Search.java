@@ -3,11 +3,8 @@ package edu.brown.cs.student.main.CSV;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.jetty.util.IO;
 
-/**
- * Search class allows user to search for rows containing a value
- */
+/** Search class allows user to search for rows containing a value */
 public class Search {
 
   private Parse data;
@@ -15,8 +12,8 @@ public class Search {
   private Object colIdentifier;
 
   /**
-   * @param data          - data file of type Parse
-   * @param value         - String user is searching for
+   * @param data - data file of type Parse
+   * @param value - String user is searching for
    * @param colIdentifier - String or Integer column user is narrowing search to
    */
   public Search(
@@ -30,7 +27,7 @@ public class Search {
   }
 
   /**
-   * @param data  - data file of type Parse
+   * @param data - data file of type Parse
    * @param value - String user is searching for
    */
   public Search(Parse data, String value) { // constructor if colIdentifier is not provided

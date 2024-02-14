@@ -2,9 +2,7 @@ package edu.brown.cs.student.main.Creator;
 
 import java.util.List;
 
-/**
- * Creator class allows developer to convert each row into a desired object
- */
+/** Creator class allows developer to convert each row into a desired object */
 public class Creator implements CreatorFromRow<List<String>> {
 
   /**
