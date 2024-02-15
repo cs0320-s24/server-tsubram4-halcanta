@@ -1,7 +1,7 @@
-package edu.brown.cs.student.main.CSV;
+package edu.brown.cs.student.main.CSVHandler.CSV;
 
-import edu.brown.cs.student.main.Creator.CreatorFromRow;
-import edu.brown.cs.student.main.Creator.FactoryFailureException;
+import edu.brown.cs.student.main.CSVHandler.Creator.CreatorFromRow;
+import edu.brown.cs.student.main.CSVHandler.Creator.FactoryFailureException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -115,7 +115,7 @@ public class Parse<T> {
    * @return - boolean indicating if data is accessible via filepath
    */
   private static boolean isPathAllowed(String filePath) {
-    String allowed_directory = "C:\\Users\\HP\\Desktop\\Tanay Subramanian\\Education\\Brown\\Sophomore\\CS 320\\Projects\\server-tsubram4-halcanta\\data";
+    String allowed_directory = "/Users/habramalcantar/Desktop/CS320/server-tsubram4-halcanta/data";
     Path path = Paths.get(filePath).toAbsolutePath();
     return path.startsWith(allowed_directory);
   }

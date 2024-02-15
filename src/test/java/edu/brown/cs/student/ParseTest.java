@@ -2,10 +2,10 @@ package edu.brown.cs.student;
 
 import static org.junit.Assert.assertEquals;
 
-import edu.brown.cs.student.main.CSV.Parse;
-import edu.brown.cs.student.main.Creator.Creator;
-import edu.brown.cs.student.main.Creator.CreatorFromRow;
-import edu.brown.cs.student.main.Creator.DataCreator;
+import edu.brown.cs.student.main.CSVHandler.CSV.Parse;
+import edu.brown.cs.student.main.CSVHandler.Creator.Creator;
+import edu.brown.cs.student.main.CSVHandler.Creator.CreatorFromRow;
+import edu.brown.cs.student.main.CSVHandler.Creator.DataCreator;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;

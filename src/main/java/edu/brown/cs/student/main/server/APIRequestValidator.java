@@ -1,2 +1,3 @@
-package edu.brown.cs.student.main.server;public class ApiRequestValidator {
-}
+package edu.brown.cs.student.main.server;
+
+public class APIRequestValidator {}

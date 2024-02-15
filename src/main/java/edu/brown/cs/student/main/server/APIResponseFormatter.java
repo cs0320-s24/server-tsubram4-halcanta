@@ -1,2 +1,3 @@
-package edu.brown.cs.student.main.server;public class APIResponseFormatter {
-}
+package edu.brown.cs.student.main.server;
+
+public class APIResponseFormatter {}
