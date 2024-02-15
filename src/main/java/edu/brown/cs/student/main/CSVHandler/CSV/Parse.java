@@ -115,7 +115,7 @@ public class Parse<T> {
    * @return - boolean indicating if data is accessible via filepath
    */
   private static boolean isPathAllowed(String filePath) {
-    String allowed_directory = "/Users/habramalcantar/Desktop/CS320/server-tsubram4-halcanta/data";
+    String allowed_directory = "C:\\Users\\HP\\Desktop\\Tanay Subramanian\\Education\\Brown\\Sophomore\\CS 320\\Projects\\server-tsubram4-halcanta\\data";
     Path path = Paths.get(filePath).toAbsolutePath();
     return path.startsWith(allowed_directory);
   }
