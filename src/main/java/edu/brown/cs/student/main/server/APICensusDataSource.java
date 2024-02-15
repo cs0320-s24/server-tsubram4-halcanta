@@ -25,6 +25,7 @@ public class APICensusDataSource implements CensusDataSource {
       HttpURLConnection clientConnection = connect(requestURL);
       Moshi moshi = new Moshi.Builder().build();
 
+      // may have to change this to reflect the grid typing from the livecode??
       Type listListString = Types.newParameterizedType(List.class, List.class, String.class);
       JsonAdapter<List<List<String>>> adapter = moshi.adapter(listListString);
 
