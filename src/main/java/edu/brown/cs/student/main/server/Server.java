@@ -7,7 +7,10 @@ import java.util.List;
 import spark.Spark;
 
 public class Server {
-  public static void main(String[] args) {
+  private final CensusDataSource source;
+
+  public Server(CensusDataSource s) {
+    this.source = s;
     int port = 3232;
     Spark.port(port);
 
@@ -35,5 +38,9 @@ public class Server {
     Spark.awaitInitialization();
 
     System.out.println("Server started at https://localhost:" + port);
+  }
+
+  public static void main(String[] args) {
+    Server server = new Server(new APICensusDataSource());
   }
 }
