@@ -3,14 +3,13 @@ package edu.brown.cs.student.main.server;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.DataSource.DataSourceException;
 import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import edu.brown.cs.student.main.server.APICensusDataSource.namebroadBandStateCounty;
 
 public class CensusHandler implements Route {
 
@@ -41,11 +40,26 @@ public class CensusHandler implements Route {
       return adapter.toJson(responseMap);
     }
 
+    try {
+      BroadbandData data = source.getBroadbandData(state, county);
+      responseMap.put("type", "success");
+      responseMap.put("targetStateInfo", broadBandDataAdaptor.toJson(data));
 
-
-
-
-    // continue with the rest of the request
-    return null;
+      return adapter.toJson(responseMap);
+    } catch (DataSourceException e) {
+      responseMap.put("query_state", state);
+      responseMap.put("query_county", county);
+      responseMap.put("type", "error");
+      responseMap.put("error_type", "datasource");
+      responseMap.put("details", e.getMessage());
+      return adapter.toJson(responseMap);
+    } catch (IllegalArgumentException e) {
+      responseMap.put("query_state", state);
+      responseMap.put("query_county", county);
+      responseMap.put("type", "error");
+      responseMap.put("error_type", "bad_param");
+      responseMap.put("details", e.getMessage());
+      return adapter.toJson(responseMap);
+    }
   }
 }

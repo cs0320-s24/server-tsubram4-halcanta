@@ -31,12 +31,12 @@ public class Server {
       System.err.println("Error message blah blah blah");
     }
 
-    Spark.get("", new CensusHandler(s));
+    Spark.get("broadband", new CensusHandler(s));
     // Spark.get("path name", new anotherTypeOfHandler);
     Spark.init();
     Spark.awaitInitialization();
 
-    System.out.println("Server started at https://localhost:" + port);
+    System.out.println("Server started at http://localhost:" + port);
   }
 
   public static void main(String[] args) {

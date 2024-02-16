@@ -7,14 +7,11 @@ import edu.brown.cs.student.main.DataSource.DataSourceException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import okio.Buffer;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * This class connects server application to United States Census API. It will make outgoing
@@ -22,10 +19,10 @@ import javax.net.ssl.HttpsURLConnection;
  * expected server response format.
  */
 public class APICensusDataSource implements CensusDataSource {
-  Map<String, String> stateCodes;
-  Map<String, nameStateCounty> countyCodes;
+  List<List<String>> stateCodes;
+  List<List<String>> countyCodes;
 
-  String[][] broadbandCensusInfo;
+  List<List<String>> broadbandCensusInfo;
 
   namebroadBandStateCounty targetInfo;
 
@@ -33,17 +30,24 @@ public class APICensusDataSource implements CensusDataSource {
     try {
       URL requestURL =
           new URL("https", "api.census.gov", "/data/2010/dec/sf1?get=NAME&for=state:*");
+      System.out.println("set up getStateCodes URL");
       HttpURLConnection clientConnection = connect(requestURL);
+      System.out.println("connected to getStateCodes URL");
       Moshi moshi = new Moshi.Builder().build();
+      System.out.println("moshi set up");
 
       // may have to change this to reflect the grid typing from the livecode??
       // turning the data type an 2D array of strings
-      Type mapStringString = Types.newParameterizedType(Map.class, String.class, String.class);
-      JsonAdapter<Map<String, String>> adapter = moshi.adapter(mapStringString);
+      Type listListString = Types.newParameterizedType(List.class, List.class, String.class);
+      System.out.println("mapStringObject type created");
+      JsonAdapter<List<List<String>>> adapter = moshi.adapter(listListString);
+      System.out.println("JsonAdapter created");
 
-      Map<String, String> body =
+      List<List<String>> body =
           adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      System.out.println("body translated from Json");
       clientConnection.disconnect();
+      System.out.println("disconnected from client");
 
       if (body == null) {
         // come back to this later
@@ -73,23 +77,41 @@ public class APICensusDataSource implements CensusDataSource {
   }
 
   private void getCountyCodes(String state, String county) throws DataSourceException, IOException {
-    System.out.println("Now acquiring Census data for " + county + "," + state + ".");
+    System.out.println("Now acquiring Census data for " + county + ", " + state + ".");
 
-    this.getStateCodes();
-    String code = this.stateCodes.get(state);
+    getStateCodes();
 
-    URL requestURL = new URL("https", "api.census.gov",
-            "/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + code);
+    String stateCode = null;
+
+    for (List<String> item : this.stateCodes) {
+      if (item.get(0).equalsIgnoreCase(state)) {
+        stateCode = item.get(1);
+      }
+    }
+
+    System.out.println("Found state code");
+    System.out.println(stateCode);
+
+    URL requestURL =
+        new URL(
+            "https",
+            "api.census.gov",
+            "/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
+    System.out.println("establishing URL");
     HttpURLConnection clientConnection = connect(requestURL);
+    System.out.println("connecting to client");
     Moshi moshi = new Moshi.Builder().build();
+    System.out.println("creating moshi");
 
-    Type mapStringRecord = Types.newParameterizedType(Map.class, String.class, nameStateCounty.class);
-    JsonAdapter<Map<String, nameStateCounty>> adapter = moshi.adapter(mapStringRecord);
+    Type listListString = Types.newParameterizedType(List.class, List.class, String.class);
+    JsonAdapter<List<List<String>>> adapter = moshi.adapter(listListString);
 
     try {
-      Map<String, nameStateCounty> body =
-              adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      List<List<String>> body =
+          adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      System.out.println("retrieving body info for county codes");
       clientConnection.disconnect();
+      System.out.println("disconnecting from client");
 
       if (body == null) {
         // come back to this
@@ -104,44 +126,56 @@ public class APICensusDataSource implements CensusDataSource {
   }
 
   @Override
-  public BroadbandData getBroadbandData(String state, String county) throws DataSourceException, IOException {
-    this.getCountyCodes(state, county);
-    nameStateCounty countyCode = this.countyCodes.get(county + ", " + state);
+  public BroadbandData getBroadbandData(String state, String county)
+      throws DataSourceException, IOException {
+    getCountyCodes(state, county);
+    String countyCode = null;
+    String stateCode = null;
+
+    for (List<String> item : this.countyCodes) {
+      if (item.get(0).equalsIgnoreCase(county + ", " + state)) {
+        countyCode = item.get(2);
+        stateCode = item.get(1);
+      }
+    }
+
+    System.out.println("Found county code");
+    System.out.println(countyCode);
 
     try {
-      URL requestURL = new URL("https", "api.census.gov",
-              "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:" + countyCode.county +
-                      "&in=state:" + stateCodes.get(state));
+      URL requestURL =
+          new URL(
+              "https",
+              "api.census.gov",
+              "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:"
+                  + countyCode
+                  + "&in=state:"
+                  + stateCode);
       HttpURLConnection clientConnection = connect(requestURL);
       Moshi moshi = new Moshi.Builder().build();
 
-      JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class).nonNull();
-      String[][] body = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      Type listListString = Types.newParameterizedType(List.class, List.class, String.class);
+      System.out.println("mapStringObject type created");
+      JsonAdapter<List<List<String>>> adapter = moshi.adapter(listListString);
+      System.out.println("JsonAdapter created");
+      List<List<String>> body =
+          adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
       clientConnection.disconnect();
 
       this.broadbandCensusInfo = body;
 
-      for (String[] countyState : body) {
-        if (countyState[3].equalsIgnoreCase(county)) {
-          String bb = countyState[1] ;
-          String st = countyState[2];
-          String co = countyState[3];
-          Date time = new Date();
-
-          namebroadBandStateCounty targetData = new namebroadBandStateCounty(bb, st, co, time.toString());
-          this.targetInfo = targetData;
-        }
-      }
+      String bb = body.get(1).get(1);
+      Date time = new Date();
+      this.targetInfo = new namebroadBandStateCounty(bb, time.toString());
 
     } catch (IOException e) {
       System.out.println("Come back to this");
     }
 
     // this should be returning a BroadbandData
-    return new BroadbandData(county + ", " + state, this.targetInfo.S2802_C03_022E, targetInfo.date());
+    return new BroadbandData(
+        county + ", " + state, this.targetInfo.S2802_C03_022E, targetInfo.date());
   }
 
-  public record nameStateCounty(String state, String county) {}
-  public record namebroadBandStateCounty(String S2802_C03_022E, String state, String county, String date) {}
-
+  public record namebroadBandStateCounty(String S2802_C03_022E, String date) {}
 }
