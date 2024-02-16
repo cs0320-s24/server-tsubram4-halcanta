@@ -1,2 +1,5 @@
-package edu.brown.cs.student.main.server;public class Extra {
+package edu.brown.cs.student.main.server;
+
+public class Extra {
+
 }

@@ -1,3 +1,9 @@
 package edu.brown.cs.student.main.server;
 
-public class APIResponseFormatter {}
+/**
+ * Standardizes format of responses sent from server to client by serializing data into JSON
+ * format.
+ */
+public class APIResponseFormatter {
+
+}

@@ -1,3 +1,9 @@
 package edu.brown.cs.student.main.server;
 
-public class APIRequestValidator {}
+/**
+ * This class validates incoming requests, ensuring they contain required parameters in a valid
+ * format.
+ */
+public class APIRequestValidator {
+
+}

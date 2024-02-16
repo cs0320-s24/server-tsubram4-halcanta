@@ -18,6 +18,7 @@ import okio.Buffer;
  * expected server response format.
  */
 public class APICensusDataSource implements CensusDataSource {
+
   private static List<List<String>> getStateCodes() throws DataSourceException {
     try {
       URL requestURL =
