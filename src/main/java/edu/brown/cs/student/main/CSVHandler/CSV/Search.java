@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CSV;
+package edu.brown.cs.student.main.CSVHandler.CSV;
 
 import java.io.IOException;
 import java.util.ArrayList;
