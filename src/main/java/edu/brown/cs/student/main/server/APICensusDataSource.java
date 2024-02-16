@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.Map;
 import okio.Buffer;
 
@@ -24,6 +25,10 @@ public class APICensusDataSource implements CensusDataSource {
   Map<String, String> stateCodes;
   Map<String, nameStateCounty> countyCodes;
 
+  String[][] broadbandCensusInfo;
+
+  namebroadBandStateCounty targetInfo;
+
   private void getStateCodes() throws DataSourceException {
     try {
       URL requestURL =
@@ -32,6 +37,7 @@ public class APICensusDataSource implements CensusDataSource {
       Moshi moshi = new Moshi.Builder().build();
 
       // may have to change this to reflect the grid typing from the livecode??
+      // turning the data type an 2D array of strings
       Type mapStringString = Types.newParameterizedType(Map.class, String.class, String.class);
       JsonAdapter<Map<String, String>> adapter = moshi.adapter(mapStringString);
 
@@ -105,16 +111,37 @@ public class APICensusDataSource implements CensusDataSource {
     try {
       URL requestURL = new URL("https", "api.census.gov",
               "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:" + countyCode.county +
-                      "&in=state:" + state);
+                      "&in=state:" + stateCodes.get(state));
+      HttpURLConnection clientConnection = connect(requestURL);
+      Moshi moshi = new Moshi.Builder().build();
+
+      JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class).nonNull();
+      String[][] body = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      clientConnection.disconnect();
+
+      this.broadbandCensusInfo = body;
+
+      for (String[] countyState : body) {
+        if (countyState[3].equalsIgnoreCase(county)) {
+          String bb = countyState[1] ;
+          String st = countyState[2];
+          String co = countyState[3];
+          Date time = new Date();
+
+          namebroadBandStateCounty targetData = new namebroadBandStateCounty(bb, st, co, time.toString());
+          this.targetInfo = targetData;
+        }
+      }
+
     } catch (IOException e) {
       System.out.println("Come back to this");
     }
 
     // this should be returning a BroadbandData
-    return null;
+    return new BroadbandData(county + ", " + state, this.targetInfo.S2802_C03_022E, targetInfo.date());
   }
 
   public record nameStateCounty(String state, String county) {}
-  public record namebroadBandStateCounty(String S2802_C03_022E, String state, String county) {}
+  public record namebroadBandStateCounty(String S2802_C03_022E, String state, String county, String date) {}
 
 }
