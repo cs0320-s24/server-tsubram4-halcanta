@@ -23,6 +23,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class APICensusDataSource implements CensusDataSource {
   Map<String, String> stateCodes;
   Map<String, nameStateCounty> countyCodes;
+
   private void getStateCodes() throws DataSourceException {
     try {
       URL requestURL =
