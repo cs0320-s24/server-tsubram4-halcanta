@@ -7,10 +7,13 @@ import edu.brown.cs.student.main.DataSource.DataSourceException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
+import java.util.Map;
 import okio.Buffer;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * This class connects server application to United States Census API. It will make outgoing
@@ -18,7 +21,9 @@ import okio.Buffer;
  * expected server response format.
  */
 public class APICensusDataSource implements CensusDataSource {
-  private static List<List<String>> getStateCodes() throws DataSourceException {
+  Map<String, String> stateCodes;
+  Map<String, nameStateCounty> countyCodes;
+  private void getStateCodes() throws DataSourceException {
     try {
       URL requestURL =
           new URL("https", "api.census.gov", "/data/2010/dec/sf1?get=NAME&for=state:*");
@@ -26,10 +31,10 @@ public class APICensusDataSource implements CensusDataSource {
       Moshi moshi = new Moshi.Builder().build();
 
       // may have to change this to reflect the grid typing from the livecode??
-      Type listListString = Types.newParameterizedType(List.class, List.class, String.class);
-      JsonAdapter<List<List<String>>> adapter = moshi.adapter(listListString);
+      Type mapStringString = Types.newParameterizedType(Map.class, String.class, String.class);
+      JsonAdapter<Map<String, String>> adapter = moshi.adapter(mapStringString);
 
-      List<List<String>> body =
+      Map<String, String> body =
           adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
       clientConnection.disconnect();
 
@@ -38,7 +43,8 @@ public class APICensusDataSource implements CensusDataSource {
         throw new DataSourceException();
       }
 
-      return body;
+      System.out.println(body);
+      this.stateCodes = body;
     } catch (IOException e) {
       throw new DataSourceException();
     }
@@ -58,4 +64,56 @@ public class APICensusDataSource implements CensusDataSource {
     }
     return clientConnection;
   }
+
+  private void getCountyCodes(String state, String county) throws DataSourceException, IOException {
+    System.out.println("Now acquiring Census data for " + county + "," + state + ".");
+
+    this.getStateCodes();
+    String code = this.stateCodes.get(state);
+
+    URL requestURL = new URL("https", "api.census.gov",
+            "/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + code);
+    HttpURLConnection clientConnection = connect(requestURL);
+    Moshi moshi = new Moshi.Builder().build();
+
+    Type mapStringRecord = Types.newParameterizedType(Map.class, String.class, nameStateCounty.class);
+    JsonAdapter<Map<String, nameStateCounty>> adapter = moshi.adapter(mapStringRecord);
+
+    try {
+      Map<String, nameStateCounty> body =
+              adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      clientConnection.disconnect();
+
+      if (body == null) {
+        // come back to this
+        throw new DataSourceException();
+      }
+
+      this.countyCodes = body;
+      // come back to this
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  @Override
+  public BroadbandData getBroadbandData(String state, String county) throws DataSourceException, IOException {
+    this.getCountyCodes(state, county);
+    nameStateCounty countyCode = this.countyCodes.get(county + ", " + state);
+
+    try {
+      URL requestURL = new URL("https", "api.census.gov",
+              "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:" + countyCode.county +
+                      "&in=state:" + state);
+    } catch (IOException e) {
+      System.out.println("Come back to this");
+    }
+
+    // this should be returning a BroadbandData
+    return null;
+  }
+
+  public record nameStateCounty(String state, String county) {}
+  public record namebroadBandStateCounty(String S2802_C03_022E, String state, String county) {}
+
 }

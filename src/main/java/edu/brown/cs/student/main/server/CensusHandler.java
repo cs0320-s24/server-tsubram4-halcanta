@@ -3,12 +3,12 @@ package edu.brown.cs.student.main.server;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class CensusHandler implements Route {
 
@@ -17,6 +17,7 @@ public class CensusHandler implements Route {
   public CensusHandler(CensusDataSource s) {
     this.source = s;
   }
+
   @Override
   public Object handle(Request request, Response response) throws Exception {
     Moshi moshi = new Moshi.Builder().build();
@@ -40,6 +41,5 @@ public class CensusHandler implements Route {
 
     // continue with the rest of the request
     return null;
-
   }
 }

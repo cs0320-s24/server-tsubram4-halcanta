@@ -1,4 +1,5 @@
 package edu.brown.cs.student.main.server;
 
-public record BroadbandData() {
+public record BroadbandData(String name, String internet) {
+
 }
