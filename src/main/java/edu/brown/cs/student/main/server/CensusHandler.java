@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.DataSource.DataSourceException;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +24,8 @@ public class CensusHandler implements Route {
   public Object handle(Request request, Response response) throws Exception {
     Moshi moshi = new Moshi.Builder().build();
 
-    Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
-    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
+     Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
+     JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
     JsonAdapter<BroadbandData> broadBandDataAdaptor = moshi.adapter(BroadbandData.class);
     Map<String, Object> responseMap = new HashMap<>();
 
@@ -43,7 +44,7 @@ public class CensusHandler implements Route {
     try {
       BroadbandData data = source.getBroadbandData(state, county);
       responseMap.put("type", "success");
-      responseMap.put("targetStateInfo", broadBandDataAdaptor.toJson(data));
+      responseMap.put("targetInformation", broadBandDataAdaptor.toJson(data));
 
       return adapter.toJson(responseMap);
     } catch (DataSourceException e) {

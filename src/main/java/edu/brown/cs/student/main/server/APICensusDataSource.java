@@ -118,6 +118,7 @@ public class APICensusDataSource implements CensusDataSource {
         throw new DataSourceException();
       }
 
+      System.out.println(body);
       this.countyCodes = body;
       // come back to this
     } catch (IOException e) {
@@ -162,6 +163,7 @@ public class APICensusDataSource implements CensusDataSource {
           adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
       clientConnection.disconnect();
 
+      System.out.println(body);
       this.broadbandCensusInfo = body;
 
       String bb = body.get(1).get(1);
