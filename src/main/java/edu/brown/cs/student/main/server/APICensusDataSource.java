@@ -152,8 +152,11 @@ public class APICensusDataSource implements CensusDataSource {
                   + countyCode
                   + "&in=state:"
                   + stateCode);
+      System.out.println("navigating census data");
       HttpURLConnection clientConnection = connect(requestURL);
+      System.out.println("establishing connection");
       Moshi moshi = new Moshi.Builder().build();
+      System.out.println("moshi built");
 
       Type listListString = Types.newParameterizedType(List.class, List.class, String.class);
       System.out.println("mapStringObject type created");
@@ -167,7 +170,9 @@ public class APICensusDataSource implements CensusDataSource {
       this.broadbandCensusInfo = body;
 
       String bb = body.get(1).get(1);
+      System.out.println(bb);
       Date time = new Date();
+      System.out.println(time);
       this.targetInfo = new namebroadBandStateCounty(bb, time.toString());
 
     } catch (IOException e) {
