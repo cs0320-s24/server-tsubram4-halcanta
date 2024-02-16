@@ -36,26 +36,26 @@ public class APICensusDataSource implements CensusDataSource {
 
       if (body == null) {
         // come back to this later
-        throw new DataSourceException();
+        throw new DataSourceException("Fetched data is null.");
       }
 
       return body;
     } catch (IOException e) {
-      throw new DataSourceException();
+      throw new DataSourceException("Failed to fetch state codes from the Census API.", e);
     }
   }
 
-  private static HttpURLConnection connect(URL requestURL) throws IOException, DataSourceException {
+  static HttpURLConnection connect(URL requestURL) throws IOException, DataSourceException {
     URLConnection urlConnection = requestURL.openConnection();
     if (!(urlConnection instanceof HttpURLConnection)) {
       // add additional stuff to exception class later
-      throw new DataSourceException();
+      throw new DataSourceException("URL connection is not an instance of HttpURLConnection.");
     }
     HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
     clientConnection.connect();
     if (clientConnection.getResponseCode() != 200) {
       // once again, add stuff to exception later
-      throw new DataSourceException();
+      throw new DataSourceException("Census API response code: " + clientConnection.getResponseCode());
     }
     return clientConnection;
   }
