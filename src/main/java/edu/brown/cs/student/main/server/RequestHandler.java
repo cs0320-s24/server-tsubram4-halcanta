@@ -16,7 +16,9 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/** This class handles incoming requests to the server and supports various endpoints. */
+/**
+ * This class handles incoming requests to the server and supports various endpoints.
+ */
 public class RequestHandler implements Route {
 
   private Object loadedCSV;
@@ -24,9 +26,14 @@ public class RequestHandler implements Route {
   /**
    * Handles requests to view the contents of the currently loaded CSV file. Returns the entire CSV
    * file's contents as a JSON 2-dimensional array.
+   *
+   * @param filepath   type string of filepath
+   * @param hasHeaders type string indicating if data has headers
+   * @return object converted to JSON
+   * @throws DataSourceException if CSV cannot be loaded correctly
    */
   private Object viewCSV(String filepath, String hasHeaders)
-      throws IOException, DataSourceException {
+      throws DataSourceException {
     boolean headers = Boolean.parseBoolean(hasHeaders);
     Creator creator = new Creator();
 
@@ -44,11 +51,20 @@ public class RequestHandler implements Route {
       throw new DataSourceException("CSV file could not be accurately loaded");
     }
   }
+
   ;
 
   /**
    * Handles requests to search the contents of the currently loaded CSV file. Supports searching by
    * column index, column header, or across all columns.
+   *
+   * @param filepath      type string of filepath
+   * @param hasHeaders    type string indicating if data has headers
+   * @param searchKey     type string of key to search for
+   * @param colIdentifier type string of column specifier
+   * @return object converted to JSON
+   * @throws DataSourceException if data is null
+   * @throws IOException         if searching throws an error
    */
   public Object searchCSV(
       String filepath, String hasHeaders, String searchKey, String colIdentifier)
@@ -72,6 +88,15 @@ public class RequestHandler implements Route {
     }
   }
 
+
+  /**
+   * handles requests from CSV data
+   *
+   * @param request  type request representing user's request
+   * @param response type response describing response to request
+   * @return object converted to JSON
+   * @throws Exception if data is null or connection throws error
+   */
   @Override
   public Object handle(Request request, Response response) throws Exception {
     Moshi moshi = new Moshi.Builder().build();

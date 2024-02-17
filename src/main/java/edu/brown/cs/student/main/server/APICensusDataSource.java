@@ -19,6 +19,7 @@ import okio.Buffer;
  * expected server response format.
  */
 public class APICensusDataSource implements CensusDataSource {
+
   List<List<String>> stateCodes;
   List<List<String>> countyCodes;
 
@@ -26,6 +27,11 @@ public class APICensusDataSource implements CensusDataSource {
 
   namebroadBandStateCounty targetInfo;
 
+  /**
+   * Retrieves state codes
+   *
+   * @throws DataSourceException if data is null
+   */
   private void getStateCodes() throws DataSourceException {
     try {
       URL requestURL =
@@ -61,6 +67,14 @@ public class APICensusDataSource implements CensusDataSource {
     }
   }
 
+  /**
+   * Connects URL to client
+   *
+   * @param requestURL URL input
+   * @return HTTpURLConnection based on given URL
+   * @throws IOException if openConnection() has an error
+   * @throws DataSourceException if not a successful response code
+   */
   static HttpURLConnection connect(URL requestURL) throws IOException, DataSourceException {
     URLConnection urlConnection = requestURL.openConnection();
     if (!(urlConnection instanceof HttpURLConnection)) {
@@ -77,6 +91,14 @@ public class APICensusDataSource implements CensusDataSource {
     return clientConnection;
   }
 
+  /**
+   * retrieves county codes
+   *
+   * @param state String type of state
+   * @param county String type of county
+   * @throws DataSourceException if data is null
+   * @throws IOException if connect has an error
+   */
   private void getCountyCodes(String state, String county) throws DataSourceException, IOException {
     System.out.println("Now acquiring Census data for " + county + ", " + state + ".");
 
@@ -127,6 +149,15 @@ public class APICensusDataSource implements CensusDataSource {
     }
   }
 
+  /**
+   * retrieves broadband data
+   *
+   * @param state type string of state
+   * @param county type string of county
+   * @return BroadbandData for query
+   * @throws DataSourceException if data is null
+   * @throws IOException if connection throws error
+   */
   @Override
   public BroadbandData getBroadbandData(String state, String county)
       throws DataSourceException, IOException {
@@ -180,10 +211,15 @@ public class APICensusDataSource implements CensusDataSource {
       System.out.println("Come back to this");
     }
 
-    // this should be returning a BroadbandData
     return new BroadbandData(
         county + ", " + state, this.targetInfo.S2802_C03_022E, targetInfo.date());
   }
 
+  /**
+   * passed to BroadbandData record as intermediary
+   *
+   * @param S2802_C03_022E part of url
+   * @param date string type of date
+   */
   public record namebroadBandStateCounty(String S2802_C03_022E, String date) {}
 }
