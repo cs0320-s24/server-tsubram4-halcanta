@@ -20,17 +20,6 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    /** String somethingSomethingAsJson = somethingAPIUtilities.readInJson("a filepath"); */
-    List<Object> data = new ArrayList<>();
-
-    try {
-      /** data = somethingAPIUtilities.readInJason(somethingSomethingAsJson); */
-    } catch (Exception e) {
-      // do not want to keep this broad exception, but it should help when it comes to debugging
-      e.printStackTrace();
-      System.err.println("Error message blah blah blah");
-    }
-
     Spark.get("broadband", new CensusHandler(s));
     Spark.get("csv", new RequestHandler());
     Spark.init();
