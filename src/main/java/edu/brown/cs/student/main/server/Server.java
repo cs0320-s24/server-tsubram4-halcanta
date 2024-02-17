@@ -32,7 +32,7 @@ public class Server {
     }
 
     Spark.get("broadband", new CensusHandler(s));
-    // Spark.get("path name", new anotherTypeOfHandler);
+    Spark.get("csv", new RequestHandler());
     Spark.init();
     Spark.awaitInitialization();
 
