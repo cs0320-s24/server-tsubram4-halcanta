@@ -37,7 +37,6 @@ public class CensusHandler implements Route {
 
     Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
     JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
-    //    Type recordStringString = Types.newParameterizedType(String.class, String.class);
     JsonAdapter<BroadbandData> broadBandDataAdaptor = moshi.adapter(BroadbandData.class);
     Map<String, Object> responseMap = new HashMap<>();
 

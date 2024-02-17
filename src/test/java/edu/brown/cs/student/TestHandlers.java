@@ -81,4 +81,54 @@ public class TestHandlers {
         adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
     assertEquals("success", responseMap.get("type"));
   }
+
+  @Test
+  public void testSearchCSV() throws IOException {
+    HttpURLConnection connection1 =
+        websiteRequest(
+            "csv?csvCommand=loadCSV&filePath=data/census/income_by_race.csv&hasHeader=true");
+    assertEquals(200, connection1.getResponseCode());
+
+    HttpURLConnection connection2 =
+        websiteRequest(
+            "csv?csvCommand=searchCSV&filePath=data/census/income_by_race.csv&hasHeader=true"
+                + "&searchKey=Asian&colIdentifier=Race");
+    assertEquals(200, connection2.getResponseCode());
+
+    Map<String, Object> responseMap =
+        adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
+    assertEquals("success", responseMap.get("type"));
+  }
+
+  @Test
+  public void testCensusBroadband() throws IOException {
+    HttpURLConnection gettingBroadband =
+        websiteRequest("broadband?state=California&county=Orange%20County");
+    assertEquals(200, gettingBroadband.getResponseCode());
+
+    Map<String, Object> responseMap =
+        adapter.fromJson(new Buffer().readFrom(gettingBroadband.getInputStream()));
+    assertEquals("success", responseMap.get("type"));
+  }
+
+  @Test
+  public void testCensusBroadbandFailure() throws IOException {
+    HttpURLConnection gettingBroadband =
+        websiteRequest("broadband?state=Mesoamerica&county=Orange%20County");
+    Map<String, Object> responseMap =
+        adapter.fromJson(new Buffer().readFrom(gettingBroadband.getInputStream()));
+    assertEquals("error", responseMap.get("type"));
+    assertEquals("datasource", responseMap.get("error_type"));
+  }
+
+  @Test
+  public void testInvalidFilepathCSV() throws IOException {
+    HttpURLConnection loadCSV = websiteRequest("csv?csvCommand=loadCSV&filePath=&hasHeaders=false");
+    assertEquals(200, loadCSV.getResponseCode());
+
+    Map<String, Object> responseMap =
+        adapter.fromJson(new Buffer().readFrom(loadCSV.getInputStream()));
+    assertEquals("error", responseMap.get("type"));
+    assertEquals("filepath not found", responseMap.get("error_arg"));
+  }
 }

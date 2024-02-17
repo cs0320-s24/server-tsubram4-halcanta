@@ -30,13 +30,15 @@ public class RequestHandler implements Route {
    * @return object converted to JSON
    * @throws DataSourceException if CSV cannot be loaded correctly
    */
-  private Object viewCSV(String filepath, String hasHeaders) throws DataSourceException {
+  private Object viewCSV(String filepath, String hasHeaders)
+      throws DataSourceException, IOException {
     boolean headers = Boolean.parseBoolean(hasHeaders);
     Creator creator = new Creator();
 
+    Parse parser = new Parse(filepath, headers, creator, filepath);
+    List<List<String>> csvData = parser.parse();
+
     try {
-      Parse parser = new Parse(filepath, headers, creator, filepath);
-      List<List<String>> csvData = parser.parse();
 
       // Serialize csvData to JSON
       Moshi moshi = new Moshi.Builder().build();
@@ -44,7 +46,7 @@ public class RequestHandler implements Route {
       JsonAdapter<List<List<String>>> jsonAdapter = moshi.adapter(type);
 
       return jsonAdapter.toJson(csvData);
-    } catch (IOException | IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       throw new DataSourceException("CSV file could not be accurately loaded");
     }
   }
@@ -70,16 +72,16 @@ public class RequestHandler implements Route {
     Creator creator = new Creator();
     Parse parser = new Parse(filepath, headers, creator, filepath);
     Search search = new Search(parser, searchKey, colIdentifier);
+    List<List<String>> searchResults = search.search();
 
     try {
-      List<List<String>> searchResults = search.search();
       Moshi moshi = new Moshi.Builder().build();
       Type type = Types.newParameterizedType(List.class, List.class, String.class);
       JsonAdapter<List<List<String>>> jsonAdapter = moshi.adapter(type);
 
       return jsonAdapter.toJson(searchResults);
 
-    } catch (IOException e) {
+    } catch (Exception e) {
       throw new DataSourceException("Search algorithm encountered problems while searching...");
     }
   }
@@ -106,7 +108,7 @@ public class RequestHandler implements Route {
       String filePath = request.queryParams("filePath");
       String hasHeaders = request.queryParams("hasHeader");
 
-      if (csvCommand == null || filePath == null) {
+      if (csvCommand == null || filePath.equals("")) {
         responseMap.put("type", "error");
         responseMap.put("error_arg", csvCommand == null ? "commandNotFound" : "filepath not found");
         return adapter.toJson(responseMap);
