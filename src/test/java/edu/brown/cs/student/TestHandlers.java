@@ -33,7 +33,7 @@ public class TestHandlers {
 
   @BeforeAll
   public static void initialize() {
-    Spark.port(3232);
+    Spark.port(0);
     Logger.getLogger("").setLevel(Level.WARNING);
   }
 
@@ -44,6 +44,8 @@ public class TestHandlers {
     RequestHandler rh = new RequestHandler();
     Spark.get("csv", rh);
     Spark.get("broadband", handler);
+    Spark.init();
+    Spark.awaitInitialization();
   }
 
   @AfterEach
@@ -64,7 +66,7 @@ public class TestHandlers {
   }
 
   @Test
-  public void testLoadCSV() throws IOException {
+  public void testLoadAndViewCSV() throws IOException {
     HttpURLConnection connection1 =
         websiteRequest(
             "csv?csvCommand=loadCSV&filePath=data/census/income_by_race.csv&hasHeader=true");
@@ -77,6 +79,6 @@ public class TestHandlers {
 
     Map<String, Object> responseMap =
         adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
-    assertEquals("success", responseMap.get("result"));
+    assertEquals("success", responseMap.get("type"));
   }
 }
