@@ -11,9 +11,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * This class handles requests from the CensusDataSource.
- */
+/** This class handles requests from the CensusDataSource. */
 public class CensusHandler implements Route {
 
   private final CensusDataSource source;
@@ -28,7 +26,7 @@ public class CensusHandler implements Route {
   /**
    * handles requests from CensusDataSource API
    *
-   * @param request  type request representing user's request to API
+   * @param request type request representing user's request to API
    * @param response type response describing response to request
    * @return object converted to JSON
    * @throws Exception if data is null or connection throws error
