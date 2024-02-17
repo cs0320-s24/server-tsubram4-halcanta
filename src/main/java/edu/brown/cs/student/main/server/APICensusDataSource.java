@@ -71,7 +71,8 @@ public class APICensusDataSource implements CensusDataSource {
     clientConnection.connect();
     if (clientConnection.getResponseCode() != 200) {
       // once again, add stuff to exception later
-      throw new DataSourceException("Census API response code: " + clientConnection.getResponseCode());
+      throw new DataSourceException(
+          "Census API response code: " + clientConnection.getResponseCode());
     }
     return clientConnection;
   }
@@ -115,7 +116,7 @@ public class APICensusDataSource implements CensusDataSource {
 
       if (body == null) {
         // come back to this
-        throw new DataSourceException();
+        throw new DataSourceException("body information is null");
       }
 
       System.out.println(body);

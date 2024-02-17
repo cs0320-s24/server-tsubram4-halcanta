@@ -1,8 +1,6 @@
 package edu.brown.cs.student.main.DataSource;
 
-/**
- * This class communicates errors with a requested datasource by wrapping the cause as a field.
- */
+/** This class communicates errors with a requested datasource by wrapping the cause as a field. */
 public class DataSourceException extends Exception {
 
   private final Throwable cause;
