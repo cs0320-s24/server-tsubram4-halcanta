@@ -88,7 +88,7 @@ public class RequestHandler implements Route {
 
       if (csvCommand == null || filePath == null) {
         responseMap.put("type", "error");
-        responseMap.put("error_arg", csvCommand == null ? "state" : "county");
+        responseMap.put("error_arg", csvCommand == null ? "commandNotFound" : "filepath not found");
         return adapter.toJson(responseMap);
       }
 
