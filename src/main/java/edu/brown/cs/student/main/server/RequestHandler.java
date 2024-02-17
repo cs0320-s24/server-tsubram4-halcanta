@@ -16,9 +16,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * This class handles incoming requests to the server and supports various endpoints.
- */
+/** This class handles incoming requests to the server and supports various endpoints. */
 public class RequestHandler implements Route {
 
   private Object loadedCSV;
@@ -27,19 +25,20 @@ public class RequestHandler implements Route {
    * Handles requests to view the contents of the currently loaded CSV file. Returns the entire CSV
    * file's contents as a JSON 2-dimensional array.
    *
-   * @param filepath   type string of filepath
+   * @param filepath type string of filepath
    * @param hasHeaders type string indicating if data has headers
    * @return object converted to JSON
    * @throws DataSourceException if CSV cannot be loaded correctly
    */
   private Object viewCSV(String filepath, String hasHeaders)
-      throws DataSourceException {
+      throws DataSourceException, IOException {
     boolean headers = Boolean.parseBoolean(hasHeaders);
     Creator creator = new Creator();
 
+    Parse parser = new Parse(filepath, headers, creator, filepath);
+    List<List<String>> csvData = parser.parse();
+
     try {
-      Parse parser = new Parse(filepath, headers, creator, filepath);
-      List<List<String>> csvData = parser.parse();
 
       // Serialize csvData to JSON
       Moshi moshi = new Moshi.Builder().build();
@@ -47,24 +46,23 @@ public class RequestHandler implements Route {
       JsonAdapter<List<List<String>>> jsonAdapter = moshi.adapter(type);
 
       return jsonAdapter.toJson(csvData);
-    } catch (IOException | IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       throw new DataSourceException("CSV file could not be accurately loaded");
     }
   }
-
   ;
 
   /**
    * Handles requests to search the contents of the currently loaded CSV file. Supports searching by
    * column index, column header, or across all columns.
    *
-   * @param filepath      type string of filepath
-   * @param hasHeaders    type string indicating if data has headers
-   * @param searchKey     type string of key to search for
+   * @param filepath type string of filepath
+   * @param hasHeaders type string indicating if data has headers
+   * @param searchKey type string of key to search for
    * @param colIdentifier type string of column specifier
    * @return object converted to JSON
    * @throws DataSourceException if data is null
-   * @throws IOException         if searching throws an error
+   * @throws IOException if searching throws an error
    */
   public Object searchCSV(
       String filepath, String hasHeaders, String searchKey, String colIdentifier)
@@ -74,25 +72,24 @@ public class RequestHandler implements Route {
     Creator creator = new Creator();
     Parse parser = new Parse(filepath, headers, creator, filepath);
     Search search = new Search(parser, searchKey, colIdentifier);
+    List<List<String>> searchResults = search.search();
 
     try {
-      List<List<String>> searchResults = search.search();
       Moshi moshi = new Moshi.Builder().build();
       Type type = Types.newParameterizedType(List.class, List.class, String.class);
       JsonAdapter<List<List<String>>> jsonAdapter = moshi.adapter(type);
 
       return jsonAdapter.toJson(searchResults);
 
-    } catch (IOException e) {
+    } catch (Exception e) {
       throw new DataSourceException("Search algorithm encountered problems while searching...");
     }
   }
 
-
   /**
    * handles requests from CSV data
    *
-   * @param request  type request representing user's request
+   * @param request type request representing user's request
    * @param response type response describing response to request
    * @return object converted to JSON
    * @throws Exception if data is null or connection throws error
@@ -111,7 +108,7 @@ public class RequestHandler implements Route {
       String filePath = request.queryParams("filePath");
       String hasHeaders = request.queryParams("hasHeader");
 
-      if (csvCommand == null || filePath == null) {
+      if (csvCommand == null || filePath.equals("")) {
         responseMap.put("type", "error");
         responseMap.put("error_arg", csvCommand == null ? "commandNotFound" : "filepath not found");
         return adapter.toJson(responseMap);

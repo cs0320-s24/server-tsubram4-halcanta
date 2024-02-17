@@ -2,13 +2,9 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import java.util.ArrayList;
-import java.util.List;
 import spark.Spark;
 
-/**
- * This class is used to start a web server for handling requests to Census and CSV data.
- */
+/** This class is used to start a web server for handling requests to Census and CSV data. */
 public class Server {
 
   private final CensusDataSource source;
@@ -26,17 +22,6 @@ public class Server {
           response.header("Access-Control-Allow-Origin", "*");
           response.header("Access-Control-Allow-Methods", "*");
         });
-
-    /** String somethingSomethingAsJson = somethingAPIUtilities.readInJson("a filepath"); */
-    List<Object> data = new ArrayList<>();
-
-    try {
-      /** data = somethingAPIUtilities.readInJason(somethingSomethingAsJson); */
-    } catch (Exception e) {
-      // do not want to keep this broad exception, but it should help when it comes to debugging
-      e.printStackTrace();
-      System.err.println("Error message blah blah blah");
-    }
 
     Spark.get("broadband", new CensusHandler(s));
     Spark.get("csv", new RequestHandler());
